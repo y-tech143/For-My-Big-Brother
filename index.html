@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,28 +6,103 @@
     <title>Brotherhood_Engine.exe [SECURED]</title>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-dark: #0d1117; --code-green: #7ee787; --code-blue: #79c0ff; --code-gold: #d4bbff; --neon-blue: #58a6ff; --border: #30363d; }
+        :root { 
+            --bg-dark: #0d1117; 
+            --code-green: #7ee787; 
+            --code-blue: #79c0ff; 
+            --code-gold: #d4bbff; 
+            --neon-blue: #58a6ff; 
+            --neon-orange: #ffa657;
+            --neon-red: #ff5f56;
+            --border: #30363d; 
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
-        body { background-color: var(--bg-dark); color: #c9d1d9; font-family: 'Fira Code', monospace; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        body { background-color: var(--bg-dark); color: #c9d1d9; font-family: 'Fira Code', monospace; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; position: relative; }
+        
+        /* Continuous Top Ticker Line */
+        .wip-ticker {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 35px;
+            background: rgba(22, 27, 34, 0.9);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            z-index: 999;
+            white-space: nowrap;
+            overflow: hidden;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            color: var(--neon-orange);
+            pointer-events: none;
+        }
+        .ticker-wrapper {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker 25s linear infinite;
+        }
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
         #particles-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
         .particle { position: absolute; color: var(--neon-blue); font-size: 14px; opacity: 0.15; animation: drift 8s infinite linear; }
         @keyframes drift { 0% { transform: translateY(110vh) rotate(0deg); opacity: 0; } 50% { opacity: 0.3; } 100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; } }
+        
         .terminal-card { width: 95%; max-width: 500px; background: #161b22; border: 1px solid var(--border); border-radius: 12px; padding: 30px; position: relative; z-index: 10; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
         .terminal-header { display: flex; gap: 8px; margin-bottom: 25px; }
         .dot { width: 12px; height: 12px; border-radius: 50%; }
         .red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
         .progress { color: var(--code-blue); font-size: 0.75rem; margin-bottom: 10px; letter-spacing: 1px; }
+        
         .content-area { min-height: 220px; transition: 0.3s ease; }
         .keyword { color: #ff7b72; } .function { color: var(--code-gold); } .string { color: var(--code-green); } .comment { color: #8b949e; font-style: italic; }
         h2 { font-size: 1.4rem; color: #fff; margin-bottom: 15px; font-family: 'Inter', sans-serif; }
-        .nav-controls { display: flex; justify-content: space-between; margin-top: 30px; gap: 15px; }
-        button { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid var(--neon-blue); background: transparent; color: var(--neon-blue); font-family: 'Fira Code'; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.8rem; }
+        
+        /* Red System Notice Box Styling */
+        .notice-box-red {
+            margin-top: 15px;
+            background: rgba(255, 95, 86, 0.07);
+            border: 1px dashed var(--neon-red);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: #ff857f;
+            line-height: 1.4;
+        }
+
+        .nav-controls { display: flex; justify-content: space-between; margin-top: 30px; gap: 15px; position: relative; z-index: 20; }
+        button { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid var(--neon-blue); background: transparent; color: var(--neon-blue); font-family: 'Fira Code'; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.8rem; position: relative; z-index: 30; }
         button:hover:not(:disabled) { background: var(--neon-blue); color: #000; }
+        
+        /* Highlight Next Button if it targets Notice or Exit */
+        button#nextBtn.highlight-red {
+            border-color: var(--neon-red);
+            color: var(--neon-red);
+        }
+        button#nextBtn.highlight-red:hover {
+            background: var(--neon-red);
+            color: #000;
+        }
+
         button:disabled { opacity: 0.2; cursor: not-allowed; border-color: #484f58; color: #484f58; }
+        
         #hero-overlay { position: fixed; inset: 0; background: var(--bg-dark); z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; transition: 0.6s; }
     </style>
 </head>
-<body oncontextmenu="return false;"> <div id="hero-overlay">
+<body oncontextmenu="return false;">
+
+    <!-- Top Ticker / Marquee Warning -->
+    <div class="wip-ticker">
+        <div class="ticker-wrapper">
+            [SYSTEM STATUS: DEPLOYMENT_IN_PROGRESS] &nbsp;&bull;&nbsp; // WARNING: LIVE ARCHITECTURE IS UNDER ACTIVE DEVELOPMENT &nbsp;&bull;&nbsp; AWAITING FURTHER COMMITS... &nbsp;&bull;&nbsp; [REFRESHING CORE MODULES] &nbsp;&bull;&nbsp; KEEP MONITORING FOR SYSTEM UPDATES
+        </div>
+    </div>
+
+    <div id="hero-overlay">
         <span class="comment" style="margin-bottom: 10px;">// Encrypted_Session: Active</span>
         <h1 style="color: #fff; margin-bottom: 20px; font-family: 'Inter'; font-weight: 800; font-size: 2rem;">The Architect of My Foundation</h1>
         <p style="color: var(--code-blue); margin-bottom: 30px; letter-spacing: 1px;">> Security Level: Maximum</p>
@@ -40,7 +115,7 @@
         <div class="terminal-header">
             <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
         </div>
-        <div class="progress" id="counter">LOG_SEGMENT: 01 / 08</div>
+        <div class="progress" id="counter">LOG_SEGMENT: 01 / 09</div>
         <div class="content-area" id="terminal-content"></div>
         <div class="nav-controls">
             <button id="backBtn" onclick="change(-1)" disabled>BACK</button>
@@ -51,7 +126,7 @@
     <script>
         // SECURITY SCRIPT: Disable Inspect Element & Shortcuts
         document.onkeydown = function(e) {
-            if(event.keyCode == 123) return false; // F12
+            if(e.keyCode == 123) return false; // F12
             if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; // Ctrl+Shift+I
             if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false; // Ctrl+Shift+C
             if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; // Ctrl+Shift+J
@@ -78,7 +153,18 @@
             { title: 'Bug Fixer', lines: ['<span class="keyword">try</span> { Life.execute(); }', '<span class="keyword">catch</span> (Error) {', '  <span class="function">Bhai.fixBug</span>(Error);', '  <span class="comment">// Life ki har error ko solve karne wale.</span>', '}'] },
             { title: 'The ATM (Sometime)', lines: ['<span class="keyword">if</span> (Wallet.status == <span class="string">"Empty"</span>) {', '  <span class="function">Bhai.transferFunds()</span>;', '  <span class="comment">// Bina sawal kiye help karne wale.</span>', '  <span class="keyword">return</span> <span class="string">"Success"</span>;', '}'] },
             { title: 'Google Maps of Life', lines: ['<span class="keyword">if</span> (Yashuu.isLost()) {', '  <span class="function">Bhai.setDirection</span>(<span class="string">"RightPath"</span>);', '  <span class="comment">// Sahi direction dikhane wale.</span>', '}'] },
-            { title: 'System Status: UNBEATABLE', lines: ['<span class="keyword">export</span> <span class="keyword">default</span> <span class="function">The_Legend_Bhai</span>;', '<span class="comment">// Real Founder of my Life.</span>', '<span class="comment">// Respect & Love, Yashuu.</span>', '<span class="keyword">return</span> <span class="string">"Legendary_Status"</span>;'] }
+            { title: 'System Status: UNBEATABLE', lines: ['<span class="keyword">export</span> <span class="keyword">default</span> <span class="function">The_Legend_Bhai</span>;', '<span class="comment">// Real Founder of my Life.</span>', '<span class="comment">// Respect & Love, Yashuu.</span>', '<span class="keyword">return</span> <span class="string">"Legendary_Status"</span>;'] },
+            { 
+                title: '<span style="color: var(--neon-red);">[SYSTEM NOTICE: UNDER BUILD]</span>', 
+                lines: [
+                    '<span class="keyword">import</span> { DevStatus } <span class="keyword">from</span> <span class="string">"Yashuu_Core"</span>;',
+                    '<span class="comment">// ALERT: Integration cycle is active.</span>',
+                    '<span class="comment">// Work is currently in progress.</span>',
+                    '<span class="comment">// Please keep reviewing for modules audit.</span>',
+                    '<span class="keyword">const</span> CurrentStage = <span class="string">"STABLE_BETA_V1.4.3"</span>;'
+                ], 
+                showRedNotice: true 
+            }
         ];
 
         let currentIdx = 0;
@@ -91,13 +177,54 @@
                 let html = `<h2>${step.title}</h2><div style="margin-top:15px; background:#0d1117; padding:15px; border-radius:6px; font-size:0.85rem; border:1px solid var(--border);">`;
                 step.lines.forEach(line => { html += `<p style="margin-bottom:5px;">${line}</p>`; });
                 html += `</div>`;
+                
+                // Show red notice on the final page
+                if(step.showRedNotice) {
+                    html += `
+                    <div class="notice-box-red">
+                        <strong>[SYSTEM NOTICE]</strong><br>
+                        This workspace is under persistent audit and enhancement. Please keep reviewing this application as it remains under active development and a work-in-progress state.
+                    </div>`;
+                }
+
                 container.innerHTML = html; container.style.opacity = 1;
                 document.getElementById('counter').innerText = `LOG_SEGMENT: ${(currentIdx + 1).toString().padStart(2, '0')} / ${steps.length.toString().padStart(2, '0')}`;
+                
+                // Set button states
                 document.getElementById('backBtn').disabled = currentIdx === 0;
-                document.getElementById('nextBtn').innerText = currentIdx === steps.length - 1 ? "FINISH" : "NEXT";
+                
+                const nextBtn = document.getElementById('nextBtn');
+                
+                // Button Styling and Text assignment
+                if (currentIdx === steps.length - 2) {
+                    // One slide before final notice (UNBEATABLE slide)
+                    nextBtn.innerText = "FINISH";
+                    nextBtn.classList.remove('highlight-red');
+                } else if (currentIdx === steps.length - 1) {
+                    // On final Red Notice slide
+                    nextBtn.innerText = "SECURE EXIT";
+                    nextBtn.classList.add('highlight-red');
+                } else {
+                    // Regular steps
+                    nextBtn.innerText = "NEXT";
+                    nextBtn.classList.remove('highlight-red');
+                }
+                
             }, 200);
         }
-        function change(delta) { currentIdx += delta; if(currentIdx >= steps.length) { alert("Respect, Bhai! System Securely Logged Out."); currentIdx = steps.length - 1; } updateUI(); }
+        
+        function change(delta) { 
+            currentIdx += delta; 
+            if(currentIdx >= steps.length) { 
+                alert("Respect, Bhai! System Securely Logged Out."); 
+                // Reset session smoothly back to overlay/home
+                currentIdx = 0; 
+                window.location.reload();
+                return;
+            } 
+            updateUI(); 
+        }
+
         function createParticles() {
             const container = document.getElementById('particles-container');
             const tags = ['{ }', '</>', '01', 'log', 'Bhai', '=>', ';'];
